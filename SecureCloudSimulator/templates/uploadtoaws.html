@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Flask Example</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.7/tailwind.min.css">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}"> 
+</head>
+
+<body class="bg-gradient-white">
+    <div id="page-wrapper">
+        <header>
+            <nav class="navbar navbar-expand-lg">
+                <a class="navbar-brand" href="{{ url_for('index') }}">Home</a>
+            </nav>
+        </header>
+        <div class="container-fluid px-20 py-8">
+            {% include 'flashmsg.html' %}
+            <div class="row justify-content-center">
+                <div class="col-xl-6">
+                    <div class="card o-hidden border-0 shadow-lg my-5">
+                        <div class="card-body p-0">
+                            <div class="p-4">
+                                <div class="text-center">
+                                    <h1 class="h4 text-black-900 font-bold mb-1">
+                                        Upload Files To S3
+                                    </h1>
+                                </div>
+                                <br>
+                                <p class="mb-4"> Upload files by clicking on Choose Files button. Click on submit button once the file had been uploaded.</p>
+                                <div class="container">
+                                    <form method="POST" action="/upload_files_to_s3" enctype="multipart/form-data">
+                                        <input type="file" name="file" multiple="true" autocomplete="off" required><br><br>
+                                        <div class="form-group row">
+                                            <div class="col-sm-4">
+                                                <input type="submit" class="btn btn-danger">
+                                            </div>
+                                        </div>
+                                    </form>
+                                    {% with messages = get_flashed_messages(with_categories=true) %}
+                                        {% if messages %}
+                                            {% for category, message in messages %}
+                                                <div class="alert alert-{{ category }} col-lg-8" role="alert"> {{ message }} </div>
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endwith %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-6">
+                    <div class="card o-hidden border-0 shadow-lg my-5">
+                        <div class="card-body p-0">
+                            <div class="p-4">
+                                <div class="text-center">
+                                    <h1 class="h4 text-black-900 font-bold mb-1">
+                                        Download Files from S3
+                                    </h1>
+                                </div>
+                                <br>
+                                <p class="mb-4">Download files from S3</p>
+                                <div class="container">
+                                    <form method="POST" action="/download_files_from_s3">
+                                        <label for="bucketname" class="block text-black-700 font-bold mb-2 text-left">Bucket Name:</label>
+                                        <input type="text" class="border rounded w-full py-2 px-3" name="bucketname"><br>
+                                        <label for="objectname" class="block text-black-700 font-bold mb-2 text-left">Object Name:</label>
+                                        <input type="text" class="border rounded w-full py-2 px-3" name="objectname"><br>
+                                        <label for="filename" class="block text-black-700 font-bold mb-2 text-left">File Path:</label>
+                                        <input type="text" class="border rounded w-full py-2 px-3" name="filename"><br><br>
+                                        <div class="form-group row">
+                                            <div class="col-sm-4">
+                                                <input type="submit" class="btn btn-danger">
+                                            </div>
+                                        </div>
+                                    </form>
+                                    {% with messages = get_flashed_messages(with_categories=true) %}
+                                        {% if messages %}
+                                            {% for category, message in messages %}
+                                                <div class="alert alert-{{ category }} col-lg-8" role="alert"> {{ message }} </div>
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endwith %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+
+</html>

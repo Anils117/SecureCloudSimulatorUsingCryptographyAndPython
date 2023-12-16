@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+ <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.7/tailwind.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">     
+    <title>Encrypto</title>
+ </head>
+<body class="">
+  <header class="py-4 px-3 md:py-8 md:px-3">
+    <nav class="flex justify-between items-center">
+      <h1 class="text-2xl md:text-3xl font-bold text-grey-500">Encrypto</h1>
+      <button id="menu-toggle" class="md:hidden focus:outline-none p-2">
+        <i class="bi bi-list font-bold text-2xl"></i>
+      </button>
+      <ul id="nav-links" class="md:flex md:flex-row md:items-center hidden mt-4 md:mt-0">
+        <li class="mr-3">
+          <a href="#fileencryp" class=" text-white hover:text-gray-700">File Encryption</a>
+        </li>
+        <li class="mr-3">
+          <a href="#textdecryp" class="text-white hover:text-gray-700">Text Encryption</a>
+        </li>
+        <li class="mr-3">
+          <a href="{{ url_for('uploadtoaws') }}" class="text-white hover:text-gray-700">Upload to Aws</a>
+        </li>
+        <li class="mr-3">
+          <a href="{{ url_for('logout') }}" class="text-white hover:text-gray-700">Logout</a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+  <script>
+    const menuToggle = document.getElementById('menu-toggle');
+    const navLinks = document.getElementById('nav-links');
+  
+    menuToggle.addEventListener('click', function() {
+      navLinks.classList.toggle('hidden');
+      menuToggle.classList.toggle('rotate-90');
+      const isOpen = !navLinks.classList.contains('hidden');
+      const openMenuPath = 'M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z';
+      const closedMenuPath = 'M4 8h16M4 16h16';
+      const openMenuClass = 'menu-open';
+      const closedMenuClass = 'menu-closed';
+  
+      // Toggle the icon to show/hide the menu
+      const menuIcon = menuToggle.querySelector('svg');
+      menuIcon.querySelector(`.${openMenuClass}`).classList.toggle('hidden', isOpen);
+      menuIcon.querySelector(`.${closedMenuClass}`).classList.toggle('hidden', !isOpen);
+      menuIcon.setAttribute('viewBox', isOpen ? '0 0 24 24' : '0 0 20 20');
+      menuIcon.setAttribute('width', isOpen ? '24' : '20');
+      menuIcon.setAttribute('height', isOpen ? '24' : '20');
+      menuIcon.querySelector('path').setAttribute('d', isOpen ? openMenuPath : closedMenuPath);
+    });
+  </script>
+
+
+
+
+
+
+<h1 class="bottom mx-20 my-5">
+   Hi {{session.username}}!!</br>Welcome to the index page...                 
+</h1>
+
+
+<!-------------------------File Encryption -------------------------------------->
+
+  <div class="px-20 py-8 text-white" id="fileencryp">
+    <h2 class="text-xl font-bold mb-2">File Encrytion - How to</h2>
+    <hr class="my-4 border-gray-300 border-1">
+    <p class="text-gray-700">
+    <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2">
+      <div class="mb-4 mx-4">
+        <dt class="font-bold">Encryption:</dt>
+        <dd>
+          <ul class="list-disc list-inside">
+            <li>Upload your file (txt, docx, pdf, jpg or png)</li>
+            <li>Click on "Encrypt" to download a zip file containing the encrypted document and a key</li>
+          </ul>
+        </dd>
+      </div>
+      <div class="mb-4 mx-4">
+        <dt class="font-bold">Decryption:</dt>
+        <dd>
+          <ul class="list-disc list-inside">
+            <li>Upload the encrypted file and key separately.</li>
+            <li>Click on "Decrypt" button to get the decrypted form.</li>
+          </ul>
+        </dd>
+      </div>
+    </dl>
+    </p>
+  </div>
+
+  <div class="container mx-auto px-20 py-8">
+<!-----------------------------------File Encryption-------------------------------------->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+      <div class="card rounded-lg p-4 text-center hover:shadow-lg transition-shadow">
+        <h1 class="text-xl font-bold mb-2">File Encryption (Fernet)</h1>
+        <form class="mt-auto" action="{{ url_for('encrypt_file_fernet') }}" method="post" enctype="multipart/form-data">
+          <div class="mb-4">
+             <label for="file" class="block text-gray-700 font-bold mb-2 text-left">Select file to encrypt:</label>
+             <input type="file" class="border rounded w-full py-2 px-3" name="file" required>
+          </div>
+          <button type="submit" class="bg-blue-500 text-white font-bold py-2 px-4 mx-auto rounded hover:bg-blue-700 transition-colors">Encrypt</button>
+        </form>
+      </div>
+<!-----------------------------------File Decryption-------------------------------------->
+      <div class="card rounded-lg p-4 text-center hover:shadow-lg transition-shadow">
+         <h1 class="text-xl font-bold mb-2">File Decryption (Fernet)</h1>
+         <form action="{{ url_for('decrypt_file_fernet') }}" method="post" enctype="multipart/form-data">
+            <div class="mb-4">
+               <label for="file" class="block text-gray-700 font-bold mb-2 text-left">Select file to decrypt:</label>
+               <input type="file" class="border rounded w-full py-2 px-3" name="file" required>
+            </div>
+            <div class="mb-4">
+               <label for="key" class="block text-gray-700 font-bold mb-2 text-left">Upload .key file:</label>
+               <input type="file" class="border rounded w-full py-2 px-3" name="key">
+            </div>
+            <button type="submit" class="bg-blue-500 text-white font-bold py-2 px-4  mx-auto mt-0 rounded hover:bg-blue-700 transition-colors">Decrypt</button>
+         </form>
+      </div>
+    </div>
+
+    {% if decrypted_file %}
+    <div class="my-10">
+      <h2 class="text-3xl font-bold mb-5">Decrypted file</h2>
+      <a href="{{ url_for('download_file', filename=decrypted_file) }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Download decrypted file</a>
+    </div>
+    {% endif %}
+
+
+    <div class="my-10 text-center">
+      <form method="GET" action="/clear">
+        <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Clear Uploads</button>
+      </form>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul class="my-10 message">
+            {% for message in messages %}
+              <li class="font-bold message-text">&nbsp;&nbsp;{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="container mx-auto px-20 py-8">
+<!-----------------------------------File Encryption-------------------------------------->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+      <div class="card rounded-lg p-4 text-center hover:shadow-lg transition-shadow">
+        <h1 class="text-xl font-bold mb-2">File Encryption (AES)</h1>
+        <form class="mt-auto" action="{{ url_for('encrypt_file_with_default_key') }}" method="post" enctype="multipart/form-data">
+          <div class="mb-4">
+             <label for="file" class="block text-gray-700 font-bold mb-2 text-left">Select file to encrypt:</label>
+             <input type="file" class="border rounded w-full py-2 px-3" name="file" required><br>
+             <!-- <label for="key" class="block text-gray-700 font-bold mb-2 text-left">Enter Key:</label>
+            <input type="text" class="border rounded w-full py-2 px-3" name="key"><br> -->
+          </div>
+          <button type="submit" class="bg-blue-500 text-white font-bold py-2 px-4 mx-auto rounded hover:bg-blue-700 transition-colors">Encrypt</button>
+        </form>
+      </div>
+<!-----------------------------------File Decryption-------------------------------------->
+      <div class="card rounded-lg p-4 text-center hover:shadow-lg transition-shadow">
+         <h1 class="text-xl font-bold mb-2">File Decryption (AES)</h1>
+         <form action="{{ url_for('decrypt_file_with_default_key') }}" method="post" enctype="multipart/form-data">
+            <div class="mb-4">
+               <label for="file" class="block text-gray-700 font-bold mb-2 text-left">Select file to decrypt:</label>
+               <input type="file" class="border rounded w-full py-2 px-3" name="file" required><br>
+               <label for="key" class="block text-gray-700 font-bold mb-2 text-left">Select Key file:</label>
+               <input type="file" class="border rounded w-full py-2 px-3" name="key" required><br>
+               <!-- <label for="key" class="block text-gray-700 font-bold mb-2 text-left">Enter Key:</label>
+              <input type="text" class="border rounded w-full py-2 px-3" name="key"><br> -->
+            </div>
+            <button type="submit" class="bg-blue-500 text-white font-bold py-2 px-4  mx-auto mt-0 rounded hover:bg-blue-700 transition-colors">Decrypt</button>
+         </form>
+      </div>
+    </div>
+
+    {% if decrypted_file %}
+    <div class="my-10">
+      <h2 class="text-3xl font-bold mb-5">Decrypted file</h2>
+      <a href="{{ url_for('download_file', filename=decrypted_file) }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Download decrypted file</a>
+    </div>
+    {% endif %}
+
+
+    <div class="my-10 text-center">
+      <form method="GET" action="/clear">
+        <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Clear Uploads</button>
+      </form>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul class="my-10 message">
+            {% for message in messages %}
+              <li class="font-bold message-text">&nbsp;&nbsp;{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+<!-------------------------Text Description -------------------------------------->
+<div class="px-20 py-8 text-white" id="textdecryp">
+  <h2 class="text-xl font-bold mb-2">Text Encrytion - How to</h2>
+  <hr class="my-4 border-gray-300 border-1">
+  <p class="text-gray-700">
+    <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2">
+      <div class="mb-4 mx-4">
+        <dt class="font-bold">Encryption:</dt>
+        <dd>
+          <ul class="list-disc list-inside">
+            <li>Type the text you want to encrypt.</li>
+            <li>Click on "Encrypt" to get the encryped text along with the key. this unique key can later be used for decryption</li>
+          </ul>
+        </dd>
+      </div>
+      <div class="mb-4 mx-4">
+        <dt class="font-bold">Decryption:</dt>
+        <dd>
+          <ul class="list-disc list-inside">
+            <li>Type the encryped text and corresponding key in the text boxs given.</li>
+            <li>Click on "Decrypt" button to get the decrypted text.</li>
+          </ul>
+        </dd>
+      </div>
+    </dl>
+  </p>
+</div>
+
+<div class="container mx-auto px-20 py-8" >
+<!-------------------------------Text Encryption------------------------------------------->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="card rounded-lg px-4 pt-4 pb-2 text-center hover:shadow-lg transition-shadow">
+      <h1 class="text-xl font-bold mb-2">Text Encryption</h1>
+      <form class="mt-auto" action="{{ url_for('text_encryption') }}" method="post" enctype="multipart/form-data">
+        {% if encrypted_text %}
+        <div class="mb-4">
+            <label for="file" class="block text-gray-700 font-bold mb-2 text-left">Encrypted text:</label>
+            <textarea rows=4 class="border rounded w-full py-2 px-3" readonly>{{ encrypted_text }}</textarea>
+        </div>
+        <div class="mb-4">
+            <label for="file" class="block text-gray-700 font-bold mb-2 text-left">Encryption key:</label>
+            <input type="text" class="border rounded w-full py-2 px-3" readonly value="{{ key }}">
+        </div>
+        {% else %}
+        <div class="mb-4">
+          <label for="file" class="block text-gray-700 font-bold mb-2 text-left">Enter text to encrypt:</label>
+          <textarea rows=4 class="border rounded w-full py-2 px-3" name="en-text" required>{{ text }}</textarea>
+        </div>
+        <button type="submit" class="bg-blue-500 text-white font-bold py-2 px-4 mx-auto rounded hover:bg-blue-700 transition-colors">Encrypt</button>
+        {% endif %}
+        </form>
+        {% if encrypted_text %}
+        <form method="POST" action="/clear_flask_vars">
+          <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Clear</button>
+        </form>
+        {% endif %}
+
+        </div>
+<!-------------------------------Text Decryption------------------------------------------->
+            <div class="card rounded-lg px-4 pt-4 pb-2 text-center hover:shadow-lg transition-shadow">
+               <h1 class="text-xl font-bold mb-2">Text Decryption</h1>
+               <form action="{{ url_for('decrypt_text') }}" method="post" enctype="multipart/form-data">
+                  
+                  {% if decrypted_text %}
+                <div class="mb-4">
+                    <label for="file" class="block text-gray-700 font-bold mb-2 text-left">Decrypted text:</label>
+                    <textarea rows=4 class="border rounded w-full py-2 px-3" readonly>{{ decrypted_text }}</textarea>
+                </div>
+                {% else %}
+                <div class="mb-4">
+                  <label for="file" class="block text-gray-700 font-bold mb-2 text-left">Enter text to decrypt:</label>
+                  <textarea rows="4" class="border rounded w-full py-2 px-3" name="en-text" required></textarea>
+               </div>
+               <div class="mb-4">
+                  <label for="key" class="block text-gray-700 font-bold mb-2 text-left">Enter your key:</label>
+                  <input type="text" class="border rounded w-full py-2 px-3" name="key">
+               </div>
+               <button type="submit" class="bg-blue-500 text-white font-bold py-2 px-4  mx-auto mt-0 rounded hover:bg-blue-700 transition-colors">Decrypt</button>
+                {% endif %}
+                 </form>
+                 {% if decrypted_text %}
+                  <form method="POST" action="/clear_flask_vars">
+                    <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Clear</button>
+                  </form>
+                  {% endif %}
+            </div>
+         </div>
+
+         <!-- {% if decrypted_file %}
+  <div class="my-10">
+    <h2 class="text-3xl font-bold mb-5">Decrypted file</h2>
+    <a href="{{ url_for('download_file', filename=decrypted_file) }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Download decrypted file</a>
+  </div>
+{% endif %} -->
+<!-- <div class="my-10 text-center">
+<form method="GET" action="/clear" class="my-10">
+  <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Clear Folders</button>
+</form>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class="my-10 message">
+      {% for message in messages %}
+        <li class="font-bold message-text">&nbsp;&nbsp;{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+</div> -->
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@2.10.2/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.js"></script>
+
+
+<footer class=" p-4 mt-auto" style="background-color: rgba(36, 36, 88, 0.608);">
+   <div class="flex justify-between">
+     <div class="text-white">
+       <p class="mb-2">&copy; 2023 Encrypto</p>
+       <p>Designed and Developed by <a href="https://github.com/musowir">Anil</a></p>
+     </div>
+     <div class="flex items-center">
+       <a href="https://github.com/musowir/Encrypto" target="_blank" rel="noopener" class="text-white mr-4 text-xl hover:text-grey">
+         <i class="bi bi-github"></i>
+       </a>
+       <a href="https://medium.com/@musowir_u/encrypto-the-ultimate-guide-to-building-a-secure-file-encryption-web-app-with-flask-and-python-f496ae9a58f6" target="_blank" rel="noopener" class="text-white mr-4 text-xl hover:text-black">
+         <i class="bi bi-medium"></i>
+       </a>
+       <a href="https://www.instagram.com/musowir_u/" target="_blank" rel="noopener" class="text-white mr-4 text-xl hover:text-red-500">
+         <i class="bi bi-instagram"></i>
+       </a>
+       <a href="https://www.linkedin.com/in/musowir-u" target="_blank" rel="noopener" class="text-white mr-4 text-xl hover:text-blue-700">
+         <i class="bi bi-linkedin"></i>
+       </a>
+       <a href="https://twitter.com/musowir_u" target="_blank" rel="noopener" class="text-white text-xl hover:text-blue-500">
+         <i class="bi bi-twitter"></i>
+       </a>
+     </div>
+   </div>
+ </footer>
+ 
+ 
+</body>
+</html>

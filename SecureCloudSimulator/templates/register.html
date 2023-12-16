@@ -1,0 +1,45 @@
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title> Register </title>
+		<link rel="stylesheet" href="{{ url_for('static', filename='style1.css') }}">			 
+	</head>
+	<body>
+		<!-- <div align="center">
+		<div align="center" class="border">
+			<div class="header">
+				<h1 class="word">Register</h1>
+			</div></br></br></br>
+			<h2 class="word">
+				<form action="{{ url_for('register') }}" method="post">
+				<div class="msg">{{ msg }}</div>
+					<input id="username" name="username" type="text" placeholder="Enter Your Username" class="textbox"/></br></br>
+					<input id="password" name="password" type="password" placeholder="Enter Your Password" class="textbox"/></br></br>
+					<input id="email" name="email" type="text" placeholder="Enter Your Email ID" class="textbox"/></br></br>
+					<input type="submit" class="btn" value="Sign Up"></br>
+				</form>
+			</h2>
+			<p class="bottom">Already have an account? <a class="bottom" href="{{url_for('login')}}"> Sign In here</a></p>
+		</div>
+		</div> -->
+		<div class="home container-fluid">
+			<div class="home-content" id="home">
+				<div class="left">
+					<div class="left-content">
+						<div class="left-header">
+							<h3>Register</h3>
+						</div>
+						<form action="{{ url_for('register') }}" method="post">
+							<div class="msg">{{ msg }}</div>
+							<input id="username" name="username" type="text" placeholder="Enter Your Username" class="textbox"/>
+							<input id="password" name="password" type="password" placeholder="Enter Your Password" class="textbox"/>
+							<input id="email" name="email" type="text" placeholder="Enter Your Email ID" class="textbox"/></br>
+							<input type="submit" class="btn" value="Sign Up"></br>
+						</form>
+						<p class="bottom">Already have an account? <a class="bottom" href="{{url_for('login')}}"> Sign In here</a></p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
